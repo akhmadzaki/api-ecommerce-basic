@@ -1,0 +1,67 @@
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    role VARCHAR(50) DEFAULT 'customer',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) UNIQUE NOT NULL,
+    is_revoked BOOLEAN NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    sku VARCHAR(100) UNIQUE NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+    category_id INT,
+    is_available BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status VARCHAR(50) DEFAULT 'pending', -- pending, paid, shipped, delivered, cancelled
+    total_amount DECIMAL(10, 2) NOT NULL,
+    shipping_address TEXT NOT NULL,
+    tracking_number VARCHAR(100),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id INT NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    provider VARCHAR(50) NOT NULL,
+    transaction_id VARCHAR(255) UNIQUE,
+    amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(10) DEFAULT 'USD',
+    status VARCHAR(50) DEFAULT 'pending', -- pending, success, failed, refunded
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

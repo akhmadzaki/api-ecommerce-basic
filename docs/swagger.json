@@ -1,0 +1,196 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Core services for the e-commerce platform. Handles user authentication (JWT), dynamic product inventories, order lifecycles, and secure transaction tracking.",
+        "title": "Go E-Commerce REST API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "User login with email and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Register new user with email, password, first name, and last name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Register user",
+                "parameters": [
+                    {
+                        "description": "Register Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.RegisterResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Responds with API health status",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check API health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.HealthResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "api_status": {
+                    "type": "string",
+                    "example": "healthy"
+                },
+                "db_status": {
+                    "type": "string",
+                    "example": "connected"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2026-10-19T15:12:00Z"
+                }
+            }
+        },
+        "model.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "test@mail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "password123"
+                }
+            }
+        },
+        "model.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE3OTIzOTk2NzMsImlhdCI6MTc5MjM5ODc3M30.ivu-dP4TLb4x1Oyt5MefFsWwrKZYwGN2GT_vJEqCAXY"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Login successful"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ0b2tlbl9pZCI6IjA0MjBiM2Q5LTgzOWYtNDcyMC04Njk5LTljOWZhNmU0MjY5YyIsImV4cCI6MTc5MzAwMzU3MywiaWF0IjoxNzkyMzk4NzczfQ.3ImJmyp91EfoRXcvygvB-J1BFzUxfkRze3wyoQUJFqA"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "model.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "test@mail.com"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "FirstName"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "LastName"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "password123"
+                }
+            }
+        },
+        "model.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "User created"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        }
+    }
+}
