@@ -17,10 +17,10 @@ This repo serves as basic skeleton to develop production grade REST API using Go
 
 ## TODO
 
-- [] Unit test
-- [] Integration test
-- [] RBAC (Role Based Access Control)
-- [] CI/CD using Github Actions
+- [ ] Unit test
+- [ ] Integration test
+- [ ] RBAC (Role Based Access Control)
+- [ ] CI/CD using Github Actions
 
 ## Build
 ```bash
