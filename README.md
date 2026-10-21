@@ -21,6 +21,8 @@ This repo serves as basic skeleton to develop production grade REST API using Go
 - [ ] Integration test
 - [ ] RBAC (Role Based Access Control)
 - [ ] CI/CD using Github Actions
+- [ ] Structured logging
+- [ ] Rate limiter
 
 ## Build
 ```bash

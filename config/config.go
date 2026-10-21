@@ -14,10 +14,11 @@ type DBConfig struct {
 }
 
 type Config struct {
-	ServerPort       string
-	DB               DBConfig
-	JWTAccessSecret  string
-	JWTRefreshSecret string
+	ServerPort        string
+	DB                DBConfig
+	JWTAccessSecret   string
+	JWTRefreshSecret  string
+	DefaultAPITimeout string
 }
 
 func LoadConfig() (*Config, error) {
@@ -59,6 +60,11 @@ func LoadConfig() (*Config, error) {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080" // Default fallback
+	}
+
+	defaultApiTimeout := os.Getenv("DEFAULT_API_TIMEOUT")
+	if defaultApiTimeout == "" {
+		defaultApiTimeout = "30" // Default fallback
 	}
 
 	return &Config{

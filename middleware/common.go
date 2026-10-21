@@ -10,20 +10,33 @@ import (
 
 func TimeoutMiddleware(timeout time.Duration) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Create a context with a timeout based on user request context
 		ctx, cancel := context.WithTimeout(c.Request.Context(), timeout)
 		defer cancel()
 
+		// Update request with the timeout context
 		c.Request = c.Request.WithContext(ctx)
 
-		c.Next()
+		// Channel to signal when the handler finishes processing
+		finished := make(chan struct{})
 
-		if ctx.Err() == context.DeadlineExceeded {
-			if !c.Writer.Written() {
-				c.JSON(http.StatusGatewayTimeout, gin.H{
-					"error": "Request timed out",
+		go func() {
+			defer close(finished)
+			c.Next() // Execute the actual endpoint handler
+		}()
+
+		select {
+		case <-finished:
+			// Request completed successfully within the timeout limit
+			return
+		case <-ctx.Done():
+			// Timeout was reached before the handler finished
+			if ctx.Err() == context.DeadlineExceeded {
+				c.AbortWithStatusJSON(http.StatusGatewayTimeout, gin.H{
+					"error": "gateway timeout: the request took too long to process",
 				})
 			}
-			c.Abort()
+			return
 		}
 	}
 }

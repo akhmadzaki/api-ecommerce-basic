@@ -11,6 +11,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,11 @@ func main() {
 
 	r := gin.Default()
 
-	r.Use(middleware.TimeoutMiddleware(30 * time.Second))
+	timeout, err := strconv.Atoi(cfg.DefaultAPITimeout)
+	if err != nil {
+		timeout = 30
+	}
+	r.Use(middleware.TimeoutMiddleware(time.Duration(timeout) * time.Second))
 
 	// Swagger endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
