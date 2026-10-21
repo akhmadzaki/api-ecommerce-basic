@@ -6,8 +6,15 @@ COPY . .
 RUN swag init && CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.24.2
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
-COPY --from=builder /app/main .
-COPY --from=builder /app/database/migrations ./database/migrations
+
+COPY --chown=appuser:appgroup --from=builder /app/main .
+COPY --chown=appuser:appgroup --from=builder /app/database/migrations ./database/migrations
+
+USER appuser
+
 EXPOSE 8080
 CMD ["./main"]

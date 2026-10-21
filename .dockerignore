@@ -1,0 +1,33 @@
+# Local binaries and build artifacts (CRITICAL for Go)
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace files (if using multi-module workspaces locally)
+go.work
+go.work.sum
+
+# Version control
+.git
+.gitignore
+
+# Environment and sensitive files
+.env
+.env.*
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Documentation and Docker assets
+README.md
+Dockerfile
+docker-compose.yml
