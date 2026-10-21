@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-type DBCOnfig struct {
+type DBConfig struct {
 	Host     string
 	Name     string
 	User     string
@@ -15,10 +15,9 @@ type DBCOnfig struct {
 
 type Config struct {
 	ServerPort       string
-	DB               DBCOnfig
+	DB               DBConfig
 	JWTAccessSecret  string
 	JWTRefreshSecret string
-	Environment      string
 }
 
 func LoadConfig() (*Config, error) {
@@ -64,7 +63,7 @@ func LoadConfig() (*Config, error) {
 
 	return &Config{
 		ServerPort: port,
-		DB: DBCOnfig{
+		DB: DBConfig{
 			Host:     dbHost,
 			Name:     dbName,
 			User:     dbUser,
