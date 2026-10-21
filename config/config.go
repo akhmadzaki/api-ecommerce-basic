@@ -26,17 +26,17 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("DB_HOST environment variable is required")
 	}
 
-	dbName := os.Getenv("DB_NAME")
+	dbName := os.Getenv("POSTGRES_DB")
 	if dbName == "" {
 		return nil, fmt.Errorf("DB_NAME environment variable is required")
 	}
 
-	dbUser := os.Getenv("DB_USER")
+	dbUser := os.Getenv("POSTGRES_USER")
 	if dbUser == "" {
 		return nil, fmt.Errorf("DB_USER environment variable is required")
 	}
 
-	dbPass := os.Getenv("DB_PASSWORD")
+	dbPass := os.Getenv("POSTGRES_PASSWORD")
 	if dbPass == "" {
 		return nil, fmt.Errorf("DB_PASSWORD environment variable is required")
 	}

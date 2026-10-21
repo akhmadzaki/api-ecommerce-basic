@@ -2,10 +2,8 @@ services:
   db:
     image: postgres:15-alpine
     container_name: postgres_db
-    environment:
-      POSTGRES_USER: postgresuser
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: appdb
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
@@ -21,15 +19,8 @@ services:
   backend:
     build: .
     container_name: go_backend
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgresuser
-      DB_PASSWORD: postgrespassword
-      DB_NAME: appdb
-      PORT: 8080
-      JWT_ACCESS_SECRET: example-access-secret
-      JWT_REFRESH_SECRET: example-refresh-secret
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     networks:
