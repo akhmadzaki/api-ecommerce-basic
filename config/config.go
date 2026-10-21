@@ -28,17 +28,17 @@ func LoadConfig() (*Config, error) {
 
 	dbName := os.Getenv("POSTGRES_DB")
 	if dbName == "" {
-		return nil, fmt.Errorf("DB_NAME environment variable is required")
+		return nil, fmt.Errorf("POSTGRES_DB environment variable is required")
 	}
 
 	dbUser := os.Getenv("POSTGRES_USER")
 	if dbUser == "" {
-		return nil, fmt.Errorf("DB_USER environment variable is required")
+		return nil, fmt.Errorf("POSTGRES_USER environment variable is required")
 	}
 
 	dbPass := os.Getenv("POSTGRES_PASSWORD")
-	if dbPass == "" {
-		return nil, fmt.Errorf("DB_PASSWORD environment variable is required")
+	if dbPass == "" || len(dbPass) < 32 {
+		return nil, fmt.Errorf("strong POSTGRES_PASSWORD environment variable is required")
 	}
 
 	dbPort := os.Getenv("DB_PORT")
@@ -47,13 +47,13 @@ func LoadConfig() (*Config, error) {
 	}
 
 	jwtAccessSecret := os.Getenv("JWT_ACCESS_SECRET")
-	if jwtAccessSecret == "" {
-		return nil, fmt.Errorf("JWT_ACCESS_SECRET environment variable is required")
+	if jwtAccessSecret == "" || len(jwtAccessSecret) < 32 {
+		return nil, fmt.Errorf("strong JWT_ACCESS_SECRET environment variable is required")
 	}
 
 	jwtRefreshSecret := os.Getenv("JWT_REFRESH_SECRET")
-	if jwtRefreshSecret == "" {
-		return nil, fmt.Errorf("JWT_REFRESH_SECRET environment variable is required")
+	if jwtRefreshSecret == "" || len(jwtRefreshSecret) < 32 {
+		return nil, fmt.Errorf("strong JWT_REFRESH_SECRET environment variable is required")
 	}
 
 	port := os.Getenv("PORT")

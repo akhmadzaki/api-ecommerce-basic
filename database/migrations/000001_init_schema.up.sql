@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash VARCHAR(255) UNIQUE NOT NULL,
     is_revoked BOOLEAN NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 );
 
 CREATE TABLE IF NOT EXISTS products (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) UNIQUE NOT NULL,
     description TEXT,
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 CREATE TABLE IF NOT EXISTS orders (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     status VARCHAR(50) DEFAULT 'pending', -- pending, paid, shipped, delivered, cancelled
     total_amount DECIMAL(10, 2) NOT NULL,
     shipping_address TEXT NOT NULL,
@@ -45,17 +45,17 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
-    id SERIAL PRIMARY KEY,
-    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    product_id INT NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
     quantity INT NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS payments (
-    id SERIAL PRIMARY KEY,
-    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     provider VARCHAR(50) NOT NULL,
     transaction_id VARCHAR(255) UNIQUE,
     amount DECIMAL(10, 2) NOT NULL,

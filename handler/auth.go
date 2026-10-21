@@ -114,8 +114,20 @@ func LoginHandler(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		query = `INSERT INTO refresh_tokens(user_id, token_hash, expired_at) VALUES($1, $2, $3) RETURNING ID`
-		database.DBConn.QueryRowContext(c.Request.Context(), query, userId, refreshTokenHash, expiredAt)
+		query = `INSERT INTO refresh_tokens(user_id, token_hash, is_revoked, expires_at) VALUES($1, $2, $3, $4) RETURNING id`
+		var tokenId int64
+		err = database.DBConn.QueryRowContext(c.Request.Context(), query, userId, refreshTokenHash, false, expiredAt).Scan(&tokenId)
+		if err != nil {
+			var pqErr *pq.Error
+			if errors.As(err, &pqErr) {
+				if pqErr.Code == "23505" {
+					c.JSON(http.StatusBadRequest, gin.H{"error": "Token already exists"})
+					return
+				}
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
 
 		c.JSON(http.StatusOK, model.LoginResponse{
 			Message:      "Login successful",
