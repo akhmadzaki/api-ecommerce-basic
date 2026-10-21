@@ -31,7 +31,7 @@ $ docker compose up --build -d
 To stop container
 
 ```bash
-$ docker compose down -v
+$ docker compose down
 ```
 
 ## Contribute
